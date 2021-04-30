@@ -26,6 +26,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testCompile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
+    testCompile('org.hamcrest:hamcrest:2.2')
     testImplementation 'io.projectreactor:reactor-test'
 }
 

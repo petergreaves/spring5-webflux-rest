@@ -7,6 +7,7 @@ import com.springfirst.learning.rest.spring5webfluxrest.repositories.VendorRepos
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -30,8 +31,9 @@ public class Bootstrap implements CommandLineRunner {
 
          vendorRepository.findAll().count().subscribe(k ->{
             if (k == 0){
-                loadVendors();
-                loadCategories();
+                loadVendors().subscribe(v ->log.info("Vendor created {}", v.getId()));
+                loadCategories().subscribe(c ->log.info("Category created {}", c.getId()));
+
             }
             else{
                 log.info("{} Vendors already present in database.", k);
@@ -41,7 +43,7 @@ public class Bootstrap implements CommandLineRunner {
     }
 
 
-    private void loadCategories(){
+    private Flux<Category> loadCategories(){
 
         Category fruits = Category.builder().description("Fruits").build();
         Category nuts = Category.builder().description("Nuts").build();
@@ -54,9 +56,9 @@ public class Bootstrap implements CommandLineRunner {
         cats.add(exotic);
         cats.add(dried);
         cats.add(fresh);
-        categoryRepository.saveAll(cats).subscribe(c ->log.info("Cat created {}", c.getId()));
+        return categoryRepository.saveAll(cats);//.subscribe(c ->log.info("Cat created {}", c.getId()));
     }
-    private void loadVendors(){
+    private Flux<Vendor> loadVendors(){
 
         Vendor vendor1 = Vendor.builder().firstName("WH").lastName("Smiths").build();
         Vendor vendor2 = Vendor.builder().firstName("Tim").lastName("Williams").build();
@@ -64,8 +66,8 @@ public class Bootstrap implements CommandLineRunner {
         List<Vendor> vendors = new ArrayList<>();
         vendors.add(vendor1);
         vendors.add(vendor2);
-        vendorRepository.saveAll(vendors).subscribe(v ->log.info("Vendor created {}", v.getId()));
-
+        //vendorRepository.saveAll(vendors).subscribe(v ->log.info("Vendor created {}", v.getId()));
+        return vendorRepository.saveAll(vendors);
 
 
 
